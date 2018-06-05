@@ -32,6 +32,10 @@ public:
 private slots:
     void onItemClicked(chnum_t id);
 
+    void on_pbId_clicked();
+
+    void on_pbState_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::vector<ItemInfo> itemInfos;

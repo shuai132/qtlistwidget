@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
         connect(uiItem, SIGNAL(itemClicked(chnum_t)), this, SLOT(onItemClicked(chnum_t)));
     }
+
+    this->resize(800, 500);
 }
 
 MainWindow::~MainWindow()
@@ -28,19 +30,32 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event __unused)
+void MainWindow::resizeEvent(QResizeEvent *event)
 {
     auto centralSize = ui->centralWidget->size();
     qDebug()<<centralSize;
 
-    ui->listWidget->resize(ui->centralWidget->size());
+    ui->listWidget->resize(QSize(ui->centralWidget->size().width(), ui->centralWidget->size().height() - ui->titleWidget->size().height()));
     for (auto itemInfo : itemInfos) {
+        const int marginWidth = 20;
+        itemInfo.item->ui->widget->resize(QSize(centralSize.width() - marginWidth, itemInfo.item->ui->widget->size().height()));
         itemInfo.qListWidgetItem->setSizeHint(itemInfo.item->ui->widget->size());
-        itemInfo.item->ui->widget->resize(QSize(centralSize.width(), itemInfo.item->ui->widget->size().height()));
     }
+
+    ui->titleWidget->resize(QSize(centralSize.width(), ui->titleWidget->size().height()));
 }
 
 void MainWindow::onItemClicked(chnum_t id)
 {
     qDebug()<<"onItemClicked:"<<id;
+}
+
+void MainWindow::on_pbId_clicked()
+{
+
+}
+
+void MainWindow::on_pbState_clicked()
+{
+
 }
