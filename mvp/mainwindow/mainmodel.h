@@ -10,8 +10,8 @@ public:
 
     // Model interface
 public:
-    void setChName(chnum_t ch, const char *name) override;
-    const char* getChName(chnum_t ch) override;
+    void setChName(chnum_t ch, QString name) override;
+    QString getChName(chnum_t ch) override;
 };
 
 #endif // MAINMODEL_H

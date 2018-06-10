@@ -18,7 +18,7 @@ MainPresenter::MainPresenter(MainContract::View* view)
         view->setChName(ch, model->getChName(ch));
     }
 
-    view->setChNameChangeListener([this](chnum_t ch, const char* name) {
+    view->setChNameChangeListener([this](chnum_t ch, QString name) {
         this->model->setChName(ch, name);
     });
 }

@@ -4,6 +4,8 @@
 #include "conf/config.h"
 #include "maintypedef.h"
 #include "../base/mvp.h"
+
+#include <QString>
 #include <functional>
 
 class MainContract
@@ -13,10 +15,10 @@ public:
 
     class View : public MVP<Model, View>::View {
     public:
-        typedef std::function<void(chnum_t, const char*)> ChNameChangeListener;
+        typedef std::function<void(chnum_t, QString)> ChNameChangeListener;
 
     public:
-        virtual void setChName(chnum_t ch, const char* name) = 0;
+        virtual void setChName(chnum_t ch, QString name) = 0;
         virtual void setState(chnum_t ch, ChState state) = 0;
         virtual void setConState(bool isConnected) = 0;
 
@@ -25,8 +27,8 @@ public:
 
     class Model : public MVP<Model, View>::Model {
     public:
-        virtual void setChName(chnum_t ch, const char* name) = 0;
-        virtual const char* getChName(chnum_t ch) = 0;
+        virtual void setChName(chnum_t ch, QString name) = 0;
+        virtual QString getChName(chnum_t ch) = 0;
     };
 };
 

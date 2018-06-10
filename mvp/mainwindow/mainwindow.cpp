@@ -67,7 +67,7 @@ void MainWindow::onChNameChanged(chnum_t ch, const char *name)
     }
 }
 
-void MainWindow::setChName(chnum_t ch, const char *name)
+void MainWindow::setChName(chnum_t ch, QString name)
 {
     assert(ChNumMin<=ch && ch<=AllChNum);
     itemInfos.at(ch - 1).item->ui->leName->setText(name);

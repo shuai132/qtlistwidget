@@ -15,13 +15,13 @@ MainModel::MainModel()
     }
 }
 
-void MainModel::setChName(chnum_t ch, const char *name)
+void MainModel::setChName(chnum_t ch, QString name)
 {
     qDebug()<<__func__<<ch<<name;
-    SharedPreferences::getInstance()->settings->setValue(QString::number(ch), name);
+    SharedPreferences::getInstance()->settings->setValue(QString::number(ch), QString(name));
 }
 
-const char* MainModel::getChName(chnum_t ch)
+QString MainModel::getChName(chnum_t ch)
 {
-    return SharedPreferences::getInstance()->settings->value(QString::number(ch)).toString().toLatin1();
+    return SharedPreferences::getInstance()->settings->value(QString::number(ch)).toString();
 }

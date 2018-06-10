@@ -42,7 +42,7 @@ private:
 
     // View interface
 private:
-    void setChName(chnum_t ch, const char *name) override;
+    void setChName(chnum_t ch, QString name) override;
     void setState(chnum_t ch, ChState state) override;
     void setConState(bool isConnected) override;
 
