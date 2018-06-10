@@ -2,7 +2,7 @@
 #define ITEM_H
 
 #include "ui_item.h"
-#include "config.h"
+#include "conf/config.h"
 
 class Item : public QWidget
 {

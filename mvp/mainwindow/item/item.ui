@@ -52,13 +52,19 @@
     <item>
      <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>PushButton</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="resource/state/state.qrc">
+        <normaloff>:/state/yes.png</normaloff>:/state/yes.png</iconset>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource/state/state.qrc"/>
+ </resources>
  <connections/>
 </ui>

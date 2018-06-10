@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "config.h"
+#include "conf/config.h"
+#include "conf/lang.h"
+#include "mainpresenter.h"
 #include <QDebug>
+#include <cassert>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,10 +26,15 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     this->resize(800, 500);
+
+    setPresenter(new MainPresenter(this));
 }
 
 MainWindow::~MainWindow()
 {
+    delete presenter;
+    presenter = nullptr;
+
     delete ui;
 }
 
@@ -48,6 +56,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::onItemClicked(chnum_t id)
 {
     qDebug()<<"onItemClicked:"<<id;
+
+    // todo:
+    setChName(id, "abc");
+    setState(id, CHState::NO);
 }
 
 void MainWindow::on_pbId_clicked()
@@ -58,4 +70,32 @@ void MainWindow::on_pbId_clicked()
 void MainWindow::on_pbState_clicked()
 {
 
+}
+
+void MainWindow::setChName(chnum_t ch, const char *name)
+{
+    assert(0<=ch && ch<=AllChNum-1);
+    itemInfos.at(ch - 1).item->ui->label->setText(name);
+}
+
+void MainWindow::setState(chnum_t ch, CHState state)
+{
+    assert(0<=ch && ch<=AllChNum-1);
+
+    qDebug()<<"state:"<<state;
+    const char* image = "";
+    switch (state) {
+    case CHState::HIDE:
+        image = ":/state/hide.png";
+        break;
+    case YES:
+        image = ":/state/yes.png";
+        break;
+    case NO:
+        image = ":/state/no.png";
+        break;
+    default:
+        break;
+    }
+    itemInfos.at(ch - 1).item->ui->pushButton->setIcon(QIcon(image));
 }

@@ -3,14 +3,15 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
-#include "item.h"
-#include "config.h"
+#include "item/item.h"
+#include "conf/config.h"
+#include "maincontract.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public MainContract::View
 {
     Q_OBJECT
 
@@ -39,6 +40,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
     std::vector<ItemInfo> itemInfos;
+
+    // View interface
+private:
+    void setChName(chnum_t ch, const char *name) override;
+    void setState(chnum_t ch, CHState state) override;
 };
 
 #endif // MAINWINDOW_H

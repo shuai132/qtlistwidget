@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,17 +23,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    item.cpp
+    main.cpp \
+    serialport/serialport.cpp \
+    mvp/base/mvp.cpp \
+    mvp/mainwindow/mainwindow.cpp \
+    mvp/mainwindow/item/item.cpp \
+    mvp/mainwindow/mainpresenter.cpp \
+    mvp/mainwindow/maincontract.cpp \
+    mvp/mainwindow/mainmodel.cpp
 
 HEADERS += \
-        mainwindow.h \
-    item.h \
-    config.h
+    conf/config.h \
+    conf/lang.h \
+    serialport/serialport.h \
+    mvp/base/mvp.h \
+    mvp/mainwindow/mainwindow.h \
+    mvp/mainwindow/item/item.h \
+    mvp/mainwindow/mainpresenter.h \
+    mvp/mainwindow/maincontract.h \
+    mvp/mainwindow/mainmodel.h
 
 FORMS += \
-        mainwindow.ui \
-    item.ui
+    mvp/mainwindow/mainwindow.ui \
+    mvp/mainwindow/item/item.ui
+
+RESOURCES += \
+    resource/state/state.qrc
