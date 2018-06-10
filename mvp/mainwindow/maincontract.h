@@ -2,6 +2,7 @@
 #define MAINCONTRACT_H
 
 #include "conf/config.h"
+#include "maintypedef.h"
 #include "../base/mvp.h"
 #include <functional>
 
@@ -16,7 +17,7 @@ public:
 
     public:
         virtual void setChName(chnum_t ch, const char* name) = 0;
-        virtual void setState(chnum_t ch, CHState state) = 0;
+        virtual void setState(chnum_t ch, ChState state) = 0;
         virtual void setConState(bool isConnected) = 0;
 
         virtual void setChNameChangeListener(ChNameChangeListener listener) = 0;

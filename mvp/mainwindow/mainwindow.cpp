@@ -73,22 +73,22 @@ void MainWindow::setChName(chnum_t ch, const char *name)
     itemInfos.at(ch - 1).item->ui->leName->setText(name);
 }
 
-void MainWindow::setState(chnum_t ch, CHState state)
+void MainWindow::setState(chnum_t ch, ChState state)
 {
     assert(ChNumMin<=ch && ch<=AllChNum);
 
-    qDebug()<<"state:"<<state;
+    qDebug()<<"state:"<<(int)state;
     const char* image = "";
     const char* title = "";
     switch (state) {
-    case CHState::HIDE:
+    case ChState::HIDE:
         image = ":/state/hide.png";
         break;
-    case YES:
+    case ChState::YES:
         image = ":/state/yes.png";
         title = "在线";
         break;
-    case NO:
+    case ChState::NO:
         image = ":/state/no.png";
         title = "丢失";
         break;

@@ -46,7 +46,8 @@ HEADERS += \
     mvp/mainwindow/maincontract.h \
     mvp/mainwindow/mainmodel.h \
     data/sharedpreferences/sharedpreferences.h \
-    mvp/mainwindow/item/mywidget/mylineedit.h
+    mvp/mainwindow/item/mywidget/mylineedit.h \
+    mvp/mainwindow/maintypedef.h
 
 FORMS += \
     mvp/mainwindow/mainwindow.ui \

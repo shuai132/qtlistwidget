@@ -43,7 +43,7 @@ private:
     // View interface
 private:
     void setChName(chnum_t ch, const char *name) override;
-    void setState(chnum_t ch, CHState state) override;
+    void setState(chnum_t ch, ChState state) override;
     void setConState(bool isConnected) override;
 
     void setChNameChangeListener(ChNameChangeListener listener) override;
