@@ -8,10 +8,14 @@ public:
     class Presenter;
 
     class Model {
+    public:
+        virtual ~Model() {}
     };
 
     class View {
     public:
+        virtual ~View() {}
+
         Presenter* presenter = nullptr;
 
         /**
@@ -26,9 +30,11 @@ public:
     class Presenter
     {
     public:
-        Presenter(T_View* view)
-            :model(model), view(view)
+        explicit Presenter(T_View* view)
+            :view(view)
         {}
+
+        virtual ~Presenter() {}
 
         T_Model* model = nullptr;
         T_View* view = nullptr;

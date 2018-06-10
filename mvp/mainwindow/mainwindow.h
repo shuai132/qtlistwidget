@@ -45,6 +45,7 @@ private:
 private:
     void setChName(chnum_t ch, const char *name) override;
     void setState(chnum_t ch, CHState state) override;
+    void setConState(bool isConnected) override;
 };
 
 #endif // MAINWINDOW_H

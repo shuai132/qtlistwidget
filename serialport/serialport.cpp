@@ -1,4 +1,5 @@
 #include "serialport.h"
+#include <QSerialPortInfo>
 #include <QDebug>
 
 SerialPort::SerialPort()
@@ -11,6 +12,8 @@ SerialPort::SerialPort()
     connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
 
     config();
+
+    startOpenTimer();
 }
 
 SerialPort::~SerialPort()
@@ -36,7 +39,6 @@ void SerialPort::config()
 
 void SerialPort::startOpenTimer()
 {
-    // todo:
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(tryOpen()));
     timer->start(1000);
@@ -44,9 +46,30 @@ void SerialPort::startOpenTimer()
 
 void SerialPort::tryOpen()
 {
-    qDebug()<<"try open...";
     if (!serial->isOpen()) {
-        serial->open(QIODevice::ReadWrite);
+        qDebug()<<"try open...";
+        QList<QSerialPortInfo> serialPortInfoList = QSerialPortInfo::availablePorts();
+        for (const QSerialPortInfo &serialPortInfo : serialPortInfoList) {
+            qDebug() << endl
+                << QObject::tr("Port: ") << serialPortInfo.portName() << endl
+                << QObject::tr("Location: ") << serialPortInfo.systemLocation() << endl
+                << QObject::tr("Description: ") << serialPortInfo.description() << endl
+                << QObject::tr("Manufacturer: ") << serialPortInfo.manufacturer() << endl
+                << QObject::tr("Vendor Identifier: ") << (serialPortInfo.hasVendorIdentifier() ? QByteArray::number(serialPortInfo.vendorIdentifier(), 16) : QByteArray()) << endl
+                << QObject::tr("Product Identifier: ") << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : QByteArray()) << endl
+                << QObject::tr("Busy: ") << (serialPortInfo.isBusy() ? QObject::tr("Yes") : QObject::tr("No")) << endl;
+
+            if (serialPortInfo.vendorIdentifier() == 0x1a86) {
+                qDebug()<<"find valible serialport! opening...";
+                if (serialPortInfo.isBusy()) {
+                    qDebug()<<"is busy...";
+                    return;
+                }
+                serial->setPortName(serialPortInfo.systemLocation());
+                serial->open(QIODevice::ReadWrite);
+                return;
+            }
+        }
     }
 }
 
@@ -57,5 +80,13 @@ void SerialPort::readData()
 
 void SerialPort::handleError(QSerialPort::SerialPortError error)
 {
-    // todo: reconnect timer
+    qDebug()<<error;
+    if (error != QSerialPort::SerialPortError::NoError) {
+        if (error != QSerialPort::SerialPortError::NotOpenError)
+            serial->close();
+        emit onConStateChanged(false);
+    }
+    else {
+        emit onConStateChanged(true);
+    }
 }

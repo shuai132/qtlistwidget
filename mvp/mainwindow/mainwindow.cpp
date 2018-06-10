@@ -33,8 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete presenter;
-    presenter = nullptr;
-
     delete ui;
 }
 
@@ -98,4 +96,9 @@ void MainWindow::setState(chnum_t ch, CHState state)
         break;
     }
     itemInfos.at(ch - 1).item->ui->pushButton->setIcon(QIcon(image));
+}
+
+void MainWindow::setConState(bool isConnected)
+{
+    ui->lbConState->setText(isConnected ? "已连接" : "未连接");
 }

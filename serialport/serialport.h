@@ -23,6 +23,7 @@ private slots:
     void handleError(QSerialPort::SerialPortError error);
 
 signals:
+    void onConStateChanged(bool isConnected);
     void onData(QByteArray byteArray);
 
 private:

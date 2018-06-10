@@ -13,6 +13,7 @@ public:
     public:
         virtual void setChName(chnum_t ch, const char* name) = 0;
         virtual void setState(chnum_t ch, CHState state) = 0;
+        virtual void setConState(bool isConnected) = 0;
     };
 
     class Model : public MVP<Model, View>::Model {

@@ -67,6 +67,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QLabel" name="lbConState">
+       <property name="text">
+        <string>未连接</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
