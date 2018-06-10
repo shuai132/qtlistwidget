@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
         itemInfos.push_back(ItemInfo(qListWidgetItem, uiItem));
 
         connect(uiItem, SIGNAL(itemClicked(chnum_t)), this, SLOT(onItemClicked(chnum_t)));
+        connect(uiItem, SIGNAL(chNameChanged(chnum_t,const char*)), this, SLOT(onChNameChanged(chnum_t,const char*)));
     }
 
     this->resize(800, 500);
@@ -38,6 +39,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
+    qDebug()<<event;
+
     auto centralSize = ui->centralWidget->size();
     qDebug()<<centralSize;
 
@@ -51,54 +54,58 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     ui->titleWidget->resize(QSize(centralSize.width(), ui->titleWidget->size().height()));
 }
 
-void MainWindow::onItemClicked(chnum_t id)
+void MainWindow::onItemClicked(chnum_t ch)
 {
-    qDebug()<<"onItemClicked:"<<id;
-
-    // todo:
-    setChName(id, "abc");
-    setState(id, CHState::NO);
+    qDebug()<<"onItemClicked:"<<ch;
 }
 
-void MainWindow::on_pbId_clicked()
+void MainWindow::onChNameChanged(chnum_t ch, const char *name)
 {
-
-}
-
-void MainWindow::on_pbState_clicked()
-{
-
+    qDebug()<<__func__<<name;
+    if (this->chNameChangeListener != nullptr) {
+        this->chNameChangeListener(ch, name);
+    }
 }
 
 void MainWindow::setChName(chnum_t ch, const char *name)
 {
-    assert(0<=ch && ch<=AllChNum-1);
-    itemInfos.at(ch - 1).item->ui->label->setText(name);
+    assert(ChNumMin<=ch && ch<=AllChNum);
+    itemInfos.at(ch - 1).item->ui->leName->setText(name);
 }
 
 void MainWindow::setState(chnum_t ch, CHState state)
 {
-    assert(0<=ch && ch<=AllChNum-1);
+    assert(ChNumMin<=ch && ch<=AllChNum);
 
     qDebug()<<"state:"<<state;
     const char* image = "";
+    const char* title = "";
     switch (state) {
     case CHState::HIDE:
         image = ":/state/hide.png";
         break;
     case YES:
         image = ":/state/yes.png";
+        title = "在线";
         break;
     case NO:
         image = ":/state/no.png";
+        title = "丢失";
         break;
     default:
         break;
     }
-    itemInfos.at(ch - 1).item->ui->pushButton->setIcon(QIcon(image));
+    auto pb = itemInfos.at(ch - 1).item->ui->pbState;
+    pb->setIcon(QIcon(image));
+    pb->setText(title);
 }
 
 void MainWindow::setConState(bool isConnected)
 {
     ui->lbConState->setText(isConnected ? "已连接" : "未连接");
+}
+
+void MainWindow::setChNameChangeListener(ChNameChangeListener listener)
+{
+    this->chNameChangeListener = listener;
 }

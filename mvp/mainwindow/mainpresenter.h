@@ -11,7 +11,7 @@ class MainPresenter : public QObject, public MVP<MainContract::Model, MainContra
 
 public:
     explicit MainPresenter(MainContract::View* view);
-    virtual ~MainPresenter();
+    ~MainPresenter();
 
 private slots:
     void onConStateChanged(bool isConnected);

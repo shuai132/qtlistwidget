@@ -2,6 +2,8 @@
 #include "mainmodel.h"
 #include <QDebug>
 
+#include "mainwindow.h"
+
 MainPresenter::MainPresenter(MainContract::View* view)
     :Presenter(view)
 {
@@ -10,6 +12,15 @@ MainPresenter::MainPresenter(MainContract::View* view)
     serialPort = new SerialPort();
 
     connect(serialPort, SIGNAL(onConStateChanged(bool)), this, SLOT(onConStateChanged(bool)));
+
+    for (chnum_t i = 0; i < AllChNum; i++) {
+        chnum_t ch = i+1;
+        view->setChName(ch, model->getChName(ch));
+    }
+
+    view->setChNameChangeListener([this](chnum_t ch, const char* name) {
+        this->model->setChName(ch, name);
+    });
 }
 
 MainPresenter::~MainPresenter()

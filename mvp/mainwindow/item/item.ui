@@ -30,9 +30,22 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="lbId">
       <property name="text">
-       <string>TextLabel</string>
+       <string>1</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="MyLineEdit" name="leName">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>171</width>
+        <height>16777215</height>
+       </size>
       </property>
      </widget>
     </item>
@@ -50,12 +63,12 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pbState">
       <property name="text">
-       <string/>
+       <string>在线</string>
       </property>
       <property name="icon">
-       <iconset resource="resource/state/state.qrc">
+       <iconset resource="../../../resource/state/state.qrc">
         <normaloff>:/state/yes.png</normaloff>:/state/yes.png</iconset>
       </property>
      </widget>
@@ -63,8 +76,15 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>mvp/mainwindow/item/mywidget/mylineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="resource/state/state.qrc"/>
+  <include location="../../../resource/state/state.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -10,8 +10,8 @@ public:
 
     // Model interface
 public:
-    void setChName(chnum_t ch, const char *name);
-    const char* getChName(chnum_t ch);
+    void setChName(chnum_t ch, const char *name) override;
+    const char* getChName(chnum_t ch) override;
 };
 
 #endif // MAINMODEL_H

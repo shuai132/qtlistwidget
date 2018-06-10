@@ -28,12 +28,12 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     serialport/serialport.cpp \
-    mvp/base/mvp.cpp \
     mvp/mainwindow/mainwindow.cpp \
     mvp/mainwindow/item/item.cpp \
     mvp/mainwindow/mainpresenter.cpp \
-    mvp/mainwindow/maincontract.cpp \
-    mvp/mainwindow/mainmodel.cpp
+    mvp/mainwindow/mainmodel.cpp \
+    data/sharedpreferences/sharedpreferences.cpp \
+    mvp/mainwindow/item/mywidget/mylineedit.cpp
 
 HEADERS += \
     conf/config.h \
@@ -44,7 +44,9 @@ HEADERS += \
     mvp/mainwindow/item/item.h \
     mvp/mainwindow/mainpresenter.h \
     mvp/mainwindow/maincontract.h \
-    mvp/mainwindow/mainmodel.h
+    mvp/mainwindow/mainmodel.h \
+    data/sharedpreferences/sharedpreferences.h \
+    mvp/mainwindow/item/mywidget/mylineedit.h
 
 FORMS += \
     mvp/mainwindow/mainwindow.ui \

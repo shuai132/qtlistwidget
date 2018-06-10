@@ -31,21 +31,22 @@ public:
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void onItemClicked(chnum_t id);
+    void onItemClicked(chnum_t ch);
 
-    void on_pbId_clicked();
-
-    void on_pbState_clicked();
+    void onChNameChanged(chnum_t ch, const char *name);
 
 private:
     Ui::MainWindow *ui;
     std::vector<ItemInfo> itemInfos;
+    ChNameChangeListener chNameChangeListener = nullptr;
 
     // View interface
 private:
     void setChName(chnum_t ch, const char *name) override;
     void setState(chnum_t ch, CHState state) override;
     void setConState(bool isConnected) override;
+
+    void setChNameChangeListener(ChNameChangeListener listener) override;
 };
 
 #endif // MAINWINDOW_H
