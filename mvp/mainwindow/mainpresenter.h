@@ -3,9 +3,11 @@
 
 #include "maincontract.h"
 #include "serialport/serialport.h"
+#include "mainwindow.h"
+#include "mainmodel.h"
 #include <QObject>
 
-class MainPresenter : public QObject, public MVP<MainContract::Model, MainContract::View>::Presenter
+class MainPresenter : public QObject, public MainContract::Presenter
 {
     Q_OBJECT
 

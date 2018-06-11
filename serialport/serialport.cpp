@@ -59,7 +59,7 @@ void SerialPort::tryOpen()
                 << QObject::tr("Product Identifier: ") << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : QByteArray()) << endl
                 << QObject::tr("Busy: ") << (serialPortInfo.isBusy() ? QObject::tr("Yes") : QObject::tr("No")) << endl;
 
-            if (serialPortInfo.vendorIdentifier() == 0x1a86) {
+            //if (serialPortInfo.vendorIdentifier() == 0x1a86) {
                 qDebug()<<"find valible serialport! opening...";
                 if (serialPortInfo.isBusy()) {
                     qDebug()<<"is busy...";
@@ -68,7 +68,7 @@ void SerialPort::tryOpen()
                 serial->setPortName(serialPortInfo.systemLocation());
                 serial->open(QIODevice::ReadWrite);
                 return;
-            }
+            //}
         }
     }
 }

@@ -1,32 +1,25 @@
 #ifndef MVP_H
 #define MVP_H
 
-template<typename T_Model, typename T_View>
-class MVP
-{
-public:
-    class Presenter;
-
+namespace MVP {
     class Model {
     public:
         virtual ~Model() {}
     };
 
+    template<typename T_Presenter>
     class View {
     public:
         virtual ~View() {}
 
-        Presenter* presenter = nullptr;
-
-        /**
-         * @brief setPresenter must call this on view construct finish
-         * @param presenter
-         */
-        void setPresenter(Presenter* presenter) {
+        void setPresenter(T_Presenter* presenter) {
             this->presenter = presenter;
         }
+
+        T_Presenter* presenter = nullptr;
     };
 
+    template<typename T_Model, typename T_View>
     class Presenter
     {
     public:
@@ -39,6 +32,6 @@ public:
         T_Model* model = nullptr;
         T_View* view = nullptr;
     };
-};
+}
 
 #endif // MVP_H
