@@ -18,7 +18,7 @@ MainModel::MainModel()
 void MainModel::setChName(chnum_t ch, QString name)
 {
     qDebug()<<__func__<<ch<<name;
-    SharedPreferences::getInstance()->settings->setValue(QString::number(ch), QString(name));
+    SharedPreferences::getInstance()->settings->setValue(QString::number(ch), name);
 }
 
 QString MainModel::getChName(chnum_t ch)

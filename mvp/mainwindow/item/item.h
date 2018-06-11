@@ -18,7 +18,7 @@ public:
 
 signals:
     void itemClicked(chnum_t ch);
-    void chNameChanged(chnum_t ch, const char *name);
+    void chNameChanged(chnum_t ch, QString name);
 
 private slots:
     void on_leName_editingFinished();

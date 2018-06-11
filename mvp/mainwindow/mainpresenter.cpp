@@ -9,7 +9,7 @@ MainPresenter::MainPresenter(MainContract::View* view)
 {
     this->model = new MainModel();
 
-    serialPort = new SerialPort();
+    serialPort = new SerialPort(BAUDRATE, USB_VID, USB_PID);
 
     connect(serialPort, SIGNAL(onConStateChanged(bool)), this, SLOT(onConStateChanged(bool)));
 

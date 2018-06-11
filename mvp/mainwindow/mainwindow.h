@@ -33,7 +33,7 @@ public:
 private slots:
     void onItemClicked(chnum_t ch);
 
-    void onChNameChanged(chnum_t ch, const char *name);
+    void onChNameChanged(chnum_t ch, QString name);
 
 private:
     Ui::MainWindow *ui;

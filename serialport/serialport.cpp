@@ -2,9 +2,11 @@
 #include <QSerialPortInfo>
 #include <QDebug>
 
-SerialPort::SerialPort()
+SerialPort::SerialPort(uint32_t baudRate, uint16_t vid, uint16_t pid)
+    :vid(vid), pid(pid)
 {
     serial = new QSerialPort();
+    serial->setBaudRate(baudRate);
 
     connect(serial, SIGNAL(error(QSerialPort::SerialPortError)),
             this, SLOT(handleError(QSerialPort::SerialPortError)));
@@ -28,9 +30,6 @@ SerialPort::~SerialPort()
 
 void SerialPort::config()
 {
-    // todo:
-    serial->setPortName("/dev/ttyUSB0");
-    serial->setBaudRate(115200);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
     serial->setStopBits(QSerialPort::OneStop);
@@ -50,17 +49,31 @@ void SerialPort::tryOpen()
         qDebug()<<"try open...";
         QList<QSerialPortInfo> serialPortInfoList = QSerialPortInfo::availablePorts();
         for (const QSerialPortInfo &serialPortInfo : serialPortInfoList) {
-            qDebug() << endl
-                << QObject::tr("Port: ") << serialPortInfo.portName() << endl
-                << QObject::tr("Location: ") << serialPortInfo.systemLocation() << endl
-                << QObject::tr("Description: ") << serialPortInfo.description() << endl
-                << QObject::tr("Manufacturer: ") << serialPortInfo.manufacturer() << endl
-                << QObject::tr("Vendor Identifier: ") << (serialPortInfo.hasVendorIdentifier() ? QByteArray::number(serialPortInfo.vendorIdentifier(), 16) : QByteArray()) << endl
-                << QObject::tr("Product Identifier: ") << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : QByteArray()) << endl
-                << QObject::tr("Busy: ") << (serialPortInfo.isBusy() ? QObject::tr("Yes") : QObject::tr("No")) << endl;
+            qDebug() << "Port: " << serialPortInfo.portName() << endl
+                     << "Location: " << serialPortInfo.systemLocation() << endl
+                     << "Description: " << serialPortInfo.description() << endl
+                     << "Manufacturer: " << serialPortInfo.manufacturer() << endl
+                     << "SerialNumber: " << serialPortInfo.serialNumber() << endl
+                     << "Vendor Identifier: " << serialPortInfo.vendorIdentifier() << endl
+                     << "Product Identifier: " << serialPortInfo.productIdentifier() << endl
+                     << "Busy: " << (serialPortInfo.isBusy() ? "Yes" : "No") << endl;
 
-            //if (serialPortInfo.vendorIdentifier() == 0x1a86) {
-                qDebug()<<"find valible serialport! opening...";
+            bool valid = true;
+            if (this->vid != 0) {
+                if (serialPortInfo.vendorIdentifier() != this->vid) {
+                    qDebug()<<"expect vid:"<<this->vid;
+                    valid = false;
+                    return;
+                }
+            }
+            if (this->pid != 0) {
+                if (serialPortInfo.productIdentifier() != this->pid)
+                    qDebug()<<"expect pid:"<<this->pid;
+                    valid = false;
+                    return;
+            }
+            if (valid) {
+                qDebug()<<"find valid serialport! opening...";
                 if (serialPortInfo.isBusy()) {
                     qDebug()<<"is busy...";
                     return;
@@ -68,7 +81,7 @@ void SerialPort::tryOpen()
                 serial->setPortName(serialPortInfo.systemLocation());
                 serial->open(QIODevice::ReadWrite);
                 return;
-            //}
+            }
         }
     }
 }

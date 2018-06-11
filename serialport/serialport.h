@@ -10,7 +10,7 @@ class SerialPort : public QObject
     Q_OBJECT
 
 public:
-    SerialPort();
+    explicit SerialPort(uint32_t baudRate, uint16_t vid = 0, uint16_t pid = 0);
     ~SerialPort();
 
 private:
@@ -30,6 +30,10 @@ private:
     QSerialPort* serial = nullptr;
     bool isOpened = false;
     QTimer* timer = nullptr;
+
+    // expected VID and PID of USB device
+    uint16_t vid;
+    uint16_t pid;
 };
 
 #endif // SERIALPORT_H

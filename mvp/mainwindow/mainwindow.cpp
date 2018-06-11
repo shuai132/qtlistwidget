@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
         itemInfos.push_back(ItemInfo(qListWidgetItem, uiItem));
 
         connect(uiItem, SIGNAL(itemClicked(chnum_t)), this, SLOT(onItemClicked(chnum_t)));
-        connect(uiItem, SIGNAL(chNameChanged(chnum_t,const char*)), this, SLOT(onChNameChanged(chnum_t,const char*)));
+        connect(uiItem, SIGNAL(chNameChanged(chnum_t,QString)), this, SLOT(onChNameChanged(chnum_t,QString)));
     }
 
     this->resize(800, 500);
@@ -59,7 +59,7 @@ void MainWindow::onItemClicked(chnum_t ch)
     qDebug()<<"onItemClicked:"<<ch;
 }
 
-void MainWindow::onChNameChanged(chnum_t ch, const char *name)
+void MainWindow::onChNameChanged(chnum_t ch, QString name)
 {
     qDebug()<<__func__<<name;
     if (this->chNameChangeListener != nullptr) {
@@ -78,19 +78,20 @@ void MainWindow::setState(chnum_t ch, ChState state)
     assert(ChNumMin<=ch && ch<=AllChNum);
 
     qDebug()<<"state:"<<(int)state;
-    const char* image = "";
-    const char* title = "";
+    QString image;
+    QString title;
     switch (state) {
     case ChState::HIDE:
         image = ":/state/hide.png";
+        title = Lang::hide;
         break;
     case ChState::YES:
         image = ":/state/yes.png";
-        title = "在线";
+        title = Lang::online;
         break;
     case ChState::NO:
         image = ":/state/no.png";
-        title = "丢失";
+        title = Lang::lost;
         break;
     default:
         break;
@@ -102,7 +103,7 @@ void MainWindow::setState(chnum_t ch, ChState state)
 
 void MainWindow::setConState(bool isConnected)
 {
-    ui->lbConState->setText(isConnected ? "已连接" : "未连接");
+    ui->lbConState->setText(isConnected ? Lang::connected : Lang::notconnected);
 }
 
 void MainWindow::setChNameChangeListener(ChNameChangeListener listener)
