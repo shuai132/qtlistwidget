@@ -38,15 +38,12 @@ private slots:
 private:
     Ui::MainWindow *ui;
     std::vector<ItemInfo> itemInfos;
-    ChNameChangeListener chNameChangeListener = nullptr;
 
     // View interface
 private:
     void setChName(chnum_t ch, QString name) override;
     void setState(chnum_t ch, ChState state) override;
     void setConState(bool isConnected) override;
-
-    void setChNameChangeListener(ChNameChangeListener listener) override;
 };
 
 #endif // MAINWINDOW_H

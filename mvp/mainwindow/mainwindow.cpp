@@ -62,9 +62,7 @@ void MainWindow::onItemClicked(chnum_t ch)
 void MainWindow::onChNameChanged(chnum_t ch, QString name)
 {
     qDebug()<<__func__<<name;
-    if (this->chNameChangeListener != nullptr) {
-        this->chNameChangeListener(ch, name);
-    }
+    presenter->restoreChName(ch, name);
 }
 
 void MainWindow::setChName(chnum_t ch, QString name)
@@ -106,7 +104,3 @@ void MainWindow::setConState(bool isConnected)
     ui->lbConState->setText(isConnected ? Lang::connected : Lang::notconnected);
 }
 
-void MainWindow::setChNameChangeListener(ChNameChangeListener listener)
-{
-    this->chNameChangeListener = listener;
-}

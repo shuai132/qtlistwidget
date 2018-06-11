@@ -20,6 +20,10 @@ private slots:
 
 private:
     SerialPort* serialPort = nullptr;
+
+    // Presenter interface
+public:
+    void restoreChName(chnum_t ch, QString name);
 };
 
 #endif // MAINPRESENTER_H

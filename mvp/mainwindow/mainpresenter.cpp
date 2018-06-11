@@ -2,8 +2,6 @@
 #include "mainmodel.h"
 #include <QDebug>
 
-#include "mainwindow.h"
-
 MainPresenter::MainPresenter(MainContract::View* view)
     :Presenter(view)
 {
@@ -17,10 +15,6 @@ MainPresenter::MainPresenter(MainContract::View* view)
         chnum_t ch = i+1;
         view->setChName(ch, model->getChName(ch));
     }
-
-    view->setChNameChangeListener([this](chnum_t ch, QString name) {
-        this->model->setChName(ch, name);
-    });
 }
 
 MainPresenter::~MainPresenter()
@@ -32,4 +26,9 @@ MainPresenter::~MainPresenter()
 void MainPresenter::onConStateChanged(bool isConnected)
 {
     view->setConState(isConnected);
+}
+
+void MainPresenter::restoreChName(chnum_t ch, QString name)
+{
+    model->setChName(ch, name);
 }
