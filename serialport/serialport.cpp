@@ -78,7 +78,7 @@ void SerialPort::tryOpen()
                     qDebug()<<"is busy...";
                     return;
                 }
-                serial->setPortName(serialPortInfo.systemLocation());
+                serial->setPortName(serialPortInfo.portName());
                 serial->open(QIODevice::ReadWrite);
                 return;
             }
