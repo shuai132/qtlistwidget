@@ -6,7 +6,6 @@
 #include "../base/mvp.h"
 
 #include <QString>
-#include <functional>
 
 namespace MainContract {
     class Model : public MVP::Model {

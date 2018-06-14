@@ -8,10 +8,14 @@ class SharedPreferences
 public:
     static SharedPreferences* getInstance();
 
+    void setValue(const QString &key, const QVariant &value);
+    QVariant getvalue(const QString &key, const QVariant &defaultValue = QVariant()) const;
+    bool contains(const QString &key) const;
+
 private:
     SharedPreferences();
 
-public:
+private:
     QSettings* settings = nullptr;
 };
 
