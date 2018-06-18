@@ -13,7 +13,12 @@ MainPresenter::MainPresenter(MainContract::View* view)
 
     for (chnum_t i = 0; i < AllChNum; i++) {
         chnum_t ch = i+1;
-        view->setChName(ch, model->getChName(ch));
+        auto name = model->getChName(ch);
+        view->setChName(ch, name);
+        if (name == "") {
+            view->setState(ch, ChState::HIDE);
+            chStateManager->setState(ch, ChState::HIDE);
+        }
     }
 }
 
@@ -30,5 +35,14 @@ void MainPresenter::onConStateChanged(bool isConnected)
 
 void MainPresenter::restoreChName(chnum_t ch, QString name)
 {
+    auto oldName = model->getChName(ch);
     model->setChName(ch, name);
+    if (name != oldName) {
+        if (name.trimmed() == "") {
+            view->setState(ch, ChState::HIDE);
+            chStateManager->setState(ch, ChState::HIDE);
+        } else {
+            view->setState(ch, chStateManager->getState(ch));
+        }
+    }
 }

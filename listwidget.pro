@@ -33,7 +33,8 @@ SOURCES += \
     mvp/mainwindow/mainpresenter.cpp \
     mvp/mainwindow/mainmodel.cpp \
     data/sharedpreferences/sharedpreferences.cpp \
-    mvp/mainwindow/item/mywidget/mylineedit.cpp
+    mvp/mainwindow/item/mywidget/mylineedit.cpp \
+    mvp/mainwindow/chstatemanager.cpp
 
 HEADERS += \
     conf/config.h \
@@ -47,7 +48,8 @@ HEADERS += \
     mvp/mainwindow/mainmodel.h \
     data/sharedpreferences/sharedpreferences.h \
     mvp/mainwindow/item/mywidget/mylineedit.h \
-    mvp/mainwindow/maintypedef.h
+    mvp/mainwindow/maintypedef.h \
+    mvp/mainwindow/chstatemanager.h
 
 FORMS += \
     mvp/mainwindow/mainwindow.ui \

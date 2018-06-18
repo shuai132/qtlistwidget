@@ -5,6 +5,7 @@
 #include "serialport/serialport.h"
 #include "mainwindow.h"
 #include "mainmodel.h"
+#include "chstatemanager.h"
 #include <QObject>
 
 class MainPresenter : public QObject, public MainContract::Presenter
@@ -20,6 +21,7 @@ private slots:
 
 private:
     SerialPort* serialPort = nullptr;
+    ChStateManager* chStateManager = ChStateManager::getInstance();
 
     // Presenter interface
 public:
