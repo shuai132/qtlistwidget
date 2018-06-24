@@ -36,7 +36,8 @@ SOURCES += \
     mvp/mainwindow/item/mywidget/mylineedit.cpp \
     mvp/mainwindow/chstatemanager.cpp \
     serialport/lib/RT_CAN.cpp \
-    serialport/lib/RT_COM.cpp
+    serialport/lib/RT_COM.cpp \
+    serialport/processor/can_processer.cpp
 
 HEADERS += \
     conf/config.h \
@@ -53,7 +54,8 @@ HEADERS += \
     mvp/mainwindow/maintypedef.h \
     mvp/mainwindow/chstatemanager.h \
     serialport/lib/RT_CAN.h \
-    serialport/lib/RT_COM.h
+    serialport/lib/RT_COM.h \
+    serialport/processor/can_processer.h
 
 FORMS += \
     mvp/mainwindow/mainwindow.ui \
