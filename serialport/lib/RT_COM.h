@@ -87,6 +87,7 @@ private:
 		return 0;
 	}
 
+public:
 	BOOL AnalyzePackage(BYTE data);
 } ;
 

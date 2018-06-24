@@ -13,6 +13,17 @@ SerialPort::SerialPort(uint32_t baudRate, uint16_t vid, uint16_t pid)
 
     connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
 
+    com.SetRxPackageCallBack([](void *pParam, const BYTE * byBuf, DWORD dwLen) {
+        (void)pParam;
+        QByteArray bytes;
+        bytes.resize(dwLen);
+        for(int i=0; i<(int)dwLen; i++) {
+            bytes[i] = byBuf[i];
+        }
+        qDebug()<<"接收到数据包:\n"<<bytes;
+        emit ((SerialPort*)pParam)->onRecvPackage(bytes);
+    }, this);
+
     config();
 
     startOpenTimer();
@@ -88,7 +99,11 @@ void SerialPort::tryOpen()
 
 void SerialPort::readData()
 {
-    emit onData(serial->readAll());
+    QByteArray bytes = serial->readAll();
+    emit onData(bytes);
+    for (int i=0; i<bytes.length(); i++) {
+        com.AnalyzePackage(bytes[i]);
+    }
 }
 
 void SerialPort::handleError(QSerialPort::SerialPortError error)

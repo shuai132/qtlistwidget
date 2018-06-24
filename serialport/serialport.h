@@ -5,6 +5,8 @@
 #include <QSerialPort>
 #include <QTimer>
 
+#include "lib/RT_COM.h"
+
 class SerialPort : public QObject
 {
     Q_OBJECT
@@ -25,6 +27,7 @@ private slots:
 signals:
     void onConStateChanged(bool isConnected);
     void onData(QByteArray byteArray);
+    void onRecvPackage(QByteArray byteArray);
 
 private:
     QSerialPort* serial = nullptr;
@@ -34,6 +37,8 @@ private:
     // expected VID and PID of USB device
     uint16_t vid;
     uint16_t pid;
+
+    RT_COM com;
 };
 
 #endif // SERIALPORT_H

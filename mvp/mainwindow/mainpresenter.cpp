@@ -11,6 +11,10 @@ MainPresenter::MainPresenter(MainContract::View* view)
 
     connect(serialPort, SIGNAL(onConStateChanged(bool)), this, SLOT(onConStateChanged(bool)));
 
+    connect(serialPort, &SerialPort::onRecvPackage, this, [](QByteArray byteArray) {
+        qDebug()<<byteArray.toHex();
+    });
+
     for (chnum_t i = 0; i < AllChNum; i++) {
         chnum_t ch = i+1;
         auto name = model->getChName(ch);
