@@ -1,6 +1,7 @@
 #include "chstatemanager.h"
 #include <QTimer>
 #include <cassert>
+#include <utils/mylog.h>
 
 #define CHECK_CHNUM(ch) do{assert(ChNumMin <= ch && ch <= ChNumMax);} while(0)
 
@@ -21,16 +22,12 @@ void ChStateManager::initTimer(QObject* parent)
 
     QTimer *timer = new QTimer(parent);
     connect(timer, &QTimer::timeout, this, [this](){
-        for(int i=1; i < AllChNum + 1; i++) {
-            if(ChData[i].on == 1) {
-                if(ChData[i].status == 1) {
-                    if(ChData[i].timeout-- == 0) {
-                        if (this->chStateTimeoutCallback)
-                            this->chStateTimeoutCallback(i);
+        for(chnum_t i=1; i < AllChNum + 1; i++) {
+            if(ChData[i].on && ChData[i].status && ChData[i].timeout-- == 0) {
+                if (this->chStateTimeoutCallback)
+                    this->chStateTimeoutCallback(i);
 
-                        ChData[i].status = false;    //状态关闭
-                    }
-                }
+                ChData[i].status = false;    //状态关闭
             }
         }
     });
@@ -44,4 +41,10 @@ void ChStateManager::setOnChStateTimeoutCallback(ChStateManager::ChStateTimeoutC
 
 ChStateManager::ChStateManager()
 {
+    for(chnum_t i=1; i < AllChNum + 1; i++) {
+        ChData[i].on = true;
+        ChData[i].status = true;
+        ChData[i].timeout = DATA_DISP_TIMEOUTRESET;
+        ChData[i].state = ChState::HIDE;
+    }
 }

@@ -75,7 +75,6 @@ void MainWindow::setState(chnum_t ch, ChState state)
 {
     assert(ChNumMin<=ch && ch<=AllChNum);
 
-    qDebug()<<"state:"<<(int)state;
     QString image;
     QString title;
     switch (state) {

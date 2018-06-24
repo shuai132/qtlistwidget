@@ -1,39 +1,21 @@
-#include "can_processer.h"
+#include "candataprocesser.h"
+#include "utils/mylog.h"
 
-#define BK_MAX              8               // 板卡最大数量
+#define CAN_DUG_PRINTF log
 
-#define FRAME_PER_MSG       4               // 每个消息需要的can帧数
-#define CACHE_CAN_MSG_NUM   60              // 启用多少帧数据缓存
-#define MSG_FIFO_LENGTH     (FRAME_PER_MSG*CACHE_CAN_MSG_NUM)  // 队列长度
-
-#define CAN_DUG_PRINTF printf
-
-/**
- * 板卡数据
- */
-typedef struct
+CanDataProcesser::CanDataProcesser()
 {
-    uint8_t mark;                           // 接收标记 用于多帧拼接时判断数据完整性
-    uint8_t data[4 * FRAME_PER_MSG];        // 板卡的通道状态数据
-}BKDataTypeDef;
-
-static BKDataTypeDef _bkData[BK_MAX];       // 记录当前板卡数据
-static int BkData[BK_MAX];                  // 记录板卡id对应的通道数量
-
-static ChStateChangedCallback chStateChangedCallback = nullptr;
-
-void CAN_ProcesserInit(void) {
     for(int i=0; i<BK_MAX; i++) {
         _bkData[i].mark = 0;
         BkData[i] = -1;
     }
 }
 
-void setChStateChangedCallback(ChStateChangedCallback callback) {
+void CanDataProcesser::setChStateChangedCallback(ChStateChangedCallback callback) {
     chStateChangedCallback = callback;
 }
 
-void CAN_ProcesserProcess(uint8_t* rxData) {
+void CanDataProcesser::process(uint8_t* rxData) {
     uint8_t  ID0    = rxData[0];
     uint8_t  index  = rxData[1];    // Index
     uint8_t  bk_id  = rxData[2];    // 机号/设备号
@@ -75,11 +57,6 @@ void CAN_ProcesserProcess(uint8_t* rxData) {
 
             if(_bkData[bk_id].mark == 0x07) {
                 CAN_DUG_PRINTF("成功接收到一条完整数据：");
-#ifdef USE_CAN_DUG_PRINTF
-                for(int i=0; i<16; i++) {
-                    CAN_DUG_PRINTF("_bkData[%02X].data[%d] = 0x%02X", bk_id, i, _bkData[bk_id].data[i]);
-                }
-#endif
 
                 // 解析_bkData中的数据
                 // _bkData[bk_id].data[0];    // always 0x16

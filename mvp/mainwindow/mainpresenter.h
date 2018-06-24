@@ -2,10 +2,11 @@
 #define MAINPRESENTER_H
 
 #include "maincontract.h"
-#include "serialport/serialport.h"
 #include "mainwindow.h"
 #include "mainmodel.h"
 #include "chstatemanager.h"
+#include "serialport/serialport.h"
+#include "serialport/processor/candataprocesser.h"
 #include <QObject>
 
 class MainPresenter : public QObject, public MainContract::Presenter
@@ -16,11 +17,9 @@ public:
     explicit MainPresenter(MainContract::View* view);
     ~MainPresenter();
 
-private slots:
-    void onConStateChanged(bool isConnected);
-
 private:
     SerialPort* serialPort = nullptr;
+    CanDataProcesser* canDataProcesser = nullptr;
 
     // Presenter interface
 public:

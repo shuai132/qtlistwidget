@@ -37,7 +37,7 @@ SOURCES += \
     mvp/mainwindow/chstatemanager.cpp \
     serialport/lib/RT_CAN.cpp \
     serialport/lib/RT_COM.cpp \
-    serialport/processor/can_processer.cpp
+    serialport/processor/candataprocesser.cpp
 
 HEADERS += \
     conf/config.h \
@@ -55,7 +55,8 @@ HEADERS += \
     mvp/mainwindow/chstatemanager.h \
     serialport/lib/RT_CAN.h \
     serialport/lib/RT_COM.h \
-    serialport/processor/can_processer.h
+    utils/mylog.h \
+    serialport/processor/candataprocesser.h
 
 FORMS += \
     mvp/mainwindow/mainwindow.ui \

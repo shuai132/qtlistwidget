@@ -57,7 +57,7 @@ void SerialPort::startOpenTimer()
 void SerialPort::tryOpen()
 {
     if (!serial->isOpen()) {
-        qDebug()<<"try open...";
+        // qDebug()<<"try open...";
         QList<QSerialPortInfo> serialPortInfoList = QSerialPortInfo::availablePorts();
         for (const QSerialPortInfo &serialPortInfo : serialPortInfoList) {
             qDebug() << "Port: " << serialPortInfo.portName() << endl

@@ -11,7 +11,6 @@
 
 typedef struct
 {
-    uint16_t ch_id;         // 通道id
     ChState state;          // 通道状态
 
     uint16_t timeout;       // 超时倒计时
