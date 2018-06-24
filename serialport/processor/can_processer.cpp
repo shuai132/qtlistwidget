@@ -1,8 +1,6 @@
 #include "can_processer.h"
-#include "mvp/mainwindow/chstatemanager.h"
 
 #define BK_MAX              8               // 板卡最大数量
-#define CH_NUM              80              //通道数
 
 #define FRAME_PER_MSG       4               // 每个消息需要的can帧数
 #define CACHE_CAN_MSG_NUM   60              // 启用多少帧数据缓存
@@ -19,21 +17,10 @@ typedef struct
     uint8_t data[4 * FRAME_PER_MSG];        // 板卡的通道状态数据
 }BKDataTypeDef;
 
-/**
- * CAN消息队列
- */
-typedef struct
-{
-    uint8_t head;
-    uint8_t tail;
-    uint8_t length;
-    CanRxMsg msg[MSG_FIFO_LENGTH];
-}CanRxMsgFIFO;
-
-
 static BKDataTypeDef _bkData[BK_MAX];       // 记录当前板卡数据
-static CanRxMsgFIFO _msgFIFO = {0, 0, 0};   // CAN消息队列
 static int BkData[BK_MAX];                  // 记录板卡id对应的通道数量
+
+static ChStateChangedCallback chStateChangedCallback = nullptr;
 
 void CAN_ProcesserInit(void) {
     for(int i=0; i<BK_MAX; i++) {
@@ -42,23 +29,15 @@ void CAN_ProcesserInit(void) {
     }
 }
 
-void CAN_ProcesserProcess(CanRxMsg RxMessage) {
-    uint8_t  ID0    = RxMessage.Data[0];
-    uint8_t  index  = RxMessage.Data[1];    // Index
-    uint8_t  bk_id  = RxMessage.Data[2];    // 机号/设备号
-    // uint8_t  ID3   = RxMessage.Data[3];
+void setChStateChangedCallback(ChStateChangedCallback callback) {
+    chStateChangedCallback = callback;
+}
 
-#ifdef USE_CAN_DUG_PRINTF
-    #if 0
-    CAN_DUG_PRINTF("TxMessage.StdId is : 0x%X", RxMessage.StdId);
-    CAN_DUG_PRINTF("RxMessage.ExtId is : 0x%X", RxMessage.ExtId);
-    CAN_DUG_PRINTF("RxMessage.IDE is   : 0x%X", RxMessage.IDE);
-    CAN_DUG_PRINTF("RxMessage.DLC is   : %d",   RxMessage.DLC);
-#endif
-    for(int i=0; i<RxMessage.DLC; i++) {
-        CAN_DUG_PRINTF("RxMessage.Data[%d] is : 0x%02X", i, RxMessage.Data[i]);
-    }
-#endif
+void CAN_ProcesserProcess(uint8_t* rxData) {
+    uint8_t  ID0    = rxData[0];
+    uint8_t  index  = rxData[1];    // Index
+    uint8_t  bk_id  = rxData[2];    // 机号/设备号
+    // uint8_t  ID3   = rxData[3];
 
     CAN_DUG_PRINTF("index = 0x%02X, bk_id = 0x%02X", index, bk_id);
 
@@ -71,19 +50,19 @@ void CAN_ProcesserProcess(CanRxMsg RxMessage) {
             // 非结束多帧
             if(index == 0) {
                 for(int i=0; i<4; i++) {
-                    _bkData[bk_id].data[4*0 + i] = RxMessage.Data[4+i];
+                    _bkData[bk_id].data[4*0 + i] = rxData[4+i];
                 }
                 _bkData[bk_id].mark |= 0x01;
             }
             else if(index == 1) {
                 for(int i=0; i<4; i++) {
-                    _bkData[bk_id].data[4*1 + i] = RxMessage.Data[4+i];
+                    _bkData[bk_id].data[4*1 + i] = rxData[4+i];
                 }
                 _bkData[bk_id].mark |= 0x02;
             }
             else if(index == 2) {
                 for(int i=0; i<4; i++) {
-                    _bkData[bk_id].data[4*2 + i] = RxMessage.Data[4+i];
+                    _bkData[bk_id].data[4*2 + i] = rxData[4+i];
                 }
                 _bkData[bk_id].mark |= 0x04;
             }
@@ -91,7 +70,7 @@ void CAN_ProcesserProcess(CanRxMsg RxMessage) {
         else if(type == 2) {
             // 结束多帧 也是第四帧
             for(int i=0; i<4; i++) {
-                _bkData[bk_id].data[4*3 + i] = RxMessage.Data[4+i];
+                _bkData[bk_id].data[4*3 + i] = rxData[4+i];
             }
 
             if(_bkData[bk_id].mark == 0x07) {
@@ -120,7 +99,7 @@ void CAN_ProcesserProcess(CanRxMsg RxMessage) {
 
                 CAN_DUG_PRINTF("解析如下：ms = %d, sec = %u, bk_id = %d, data = 0x%X", ms, sec, bk_id, data);
 
-                if (0 <= bk_id && bk_id < BK_MAX) {
+                if (bk_id < BK_MAX) {
                     BkData[bk_id] = chCount;
 
                     uint32_t chStart = 1;
@@ -137,33 +116,18 @@ void CAN_ProcesserProcess(CanRxMsg RxMessage) {
                         uint16_t ch    = chStart + i;
                         uint8_t  state = (data >> i) & 0x01;
 
-                        if (1 <= ch && ch <= CH_NUM) {
-                            uint16_t id = ch;     // id为要显示到屏幕的第几行
-                            CAN_DUG_PRINTF("ch = %d, state = %d, 要显示到屏幕的绝对位置为：%d", ch, state, id);
-
-                            const ChState lastState = ChStateManager::getInstance()->getState(id);
+                        if (1 <= ch && ch <= AllChNum) {
+                            const ChState lastState = ChStateManager::ChData[ch].state;
                             const ChState nowState  = state == 1 ? ChState::YES : ChState::NO;
-                            ChStateManager::getInstance()->setState(id, nowState);
+                            ChStateManager::ChData[ch].state = nowState;
 
-//                            if(ChData[id].on) {
-//                                // 避免频繁写屏
-//                                if (nowState == lastState) {
-//                                    CAN_DUG_PRINTF("与上次状态一致,不再更新屏幕!");
-//                                } else {
-//                                    LCD_SetChState(id, nowState);
-//                                    CAN_DUG_PRINTF("状态发生改变,已更新屏幕!");
-//                                }
-
-//                                // 重置超时管理
-//                                ChData[id].timeout = DATA_DISP_TIMEOUTRESET;
-//                                ChData[id].status  = 1;            // 状态启用
-//                            }
-//                            else {
-//                                CAN_DUG_PRINTF("ch = %d, state = %d, 当前通道未启用！", ch, state);
-//                            }
+                            if (nowState != lastState) {
+                                if (chStateChangedCallback)
+                                    chStateChangedCallback(ch, nowState);
+                            }
                         }
                         else {
-                            CAN_DUG_PRINTF("ch = %d, 超出屏幕可显示的范围！", ch);
+                            CAN_DUG_PRINTF("ch = %d, 通道超出范围！", ch);
                         }
                     }
                 }
@@ -183,40 +147,5 @@ void CAN_ProcesserProcess(CanRxMsg RxMessage) {
     }
     else {
         CAN_DUG_PRINTF("总线上接收到无效数据! type=%d", type);
-    }
-}
-
-bool CAN_RxMsg_Enqueue(CanRxMsg RxMessage) {
-    if(_msgFIFO.length < MSG_FIFO_LENGTH) {
-        _msgFIFO.msg[_msgFIFO.head++] = RxMessage;
-
-        if(_msgFIFO.head >= MSG_FIFO_LENGTH) {
-            _msgFIFO.head = 0;
-        }
-        _msgFIFO.length++;
-
-        // CAN_DUG_PRINTF("Enqueue：队列已使用：%d/%d", _msgFIFO.length, MSG_FIFO_LENGTH);
-        return true;
-    }
-    else {
-        CAN_DUG_PRINTF("队列已满！");
-        return false;
-    }
-}
-
-bool CAN_RxMsg_Dequeue(CanRxMsg *msg) {
-    if(_msgFIFO.length > 0) {
-        *msg = _msgFIFO.msg[_msgFIFO.tail];
-
-        if(++_msgFIFO.tail >= MSG_FIFO_LENGTH) {
-            _msgFIFO.tail = 0;
-        }
-
-        _msgFIFO.length--;
-        // CAN_DUG_PRINTF("Dequeue：队列已使用：%d/%d", _msgFIFO.length, MSG_FIFO_LENGTH);
-        return true;
-    }
-    else {
-        return false;
     }
 }

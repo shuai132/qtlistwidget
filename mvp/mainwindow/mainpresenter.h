@@ -21,7 +21,6 @@ private slots:
 
 private:
     SerialPort* serialPort = nullptr;
-    ChStateManager* chStateManager = ChStateManager::getInstance();
 
     // Presenter interface
 public:

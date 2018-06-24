@@ -1,8 +1,11 @@
 #ifndef __CAN_PROCESSER_H
 #define __CAN_PROCESSER_H
 
+#include "mvp/mainwindow/chstatemanager.h"
+
 #include <stdbool.h>
 #include <stdint.h>
+#include <functional>
 
 /**
   * @brief  CAN Rx message structure definition
@@ -36,19 +39,9 @@ typedef struct
 
 void CAN_ProcesserInit(void);
 
-/**
- * 处理消息帧 进行解析拼接显示等处理
- */
-void CAN_ProcesserProcess(CanRxMsg RxMessage);
+typedef std::function<void(chnum_t ch, ChState state)> ChStateChangedCallback;
+void setChStateChangedCallback(ChStateChangedCallback callback);
 
-/**
- * CAN消息帧入队列 成功返回true 已满返回false
- */
-bool CAN_RxMsg_Enqueue(CanRxMsg RxMessage);
-
-/**
- * 从消息队列中获取一帧
- */
-bool CAN_RxMsg_Dequeue(CanRxMsg *msg);
+void CAN_ProcesserProcess(uint8_t* rxData);
 
 #endif
