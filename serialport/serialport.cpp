@@ -101,9 +101,12 @@ void SerialPort::readData()
 {
     QByteArray bytes = serial->readAll();
     emit onData(bytes);
+
+    uint8_t* data = new uint8_t[bytes.length()];
     for (int i=0; i<bytes.length(); i++) {
-        com.AnalyzePackage(bytes[i]);
+        data[i] = bytes[i];
     }
+    com.feedData(data, bytes.length());
 }
 
 void SerialPort::handleError(QSerialPort::SerialPortError error)

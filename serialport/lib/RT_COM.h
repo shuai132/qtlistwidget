@@ -87,8 +87,10 @@ private:
 		return 0;
 	}
 
+    BOOL AnalyzePackage(BYTE data);
+
 public:
-	BOOL AnalyzePackage(BYTE data);
+    void feedData(const BYTE * byBuf, DWORD dwLen);
 } ;
 
 

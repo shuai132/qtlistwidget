@@ -298,6 +298,23 @@ void RT_COM::RecvThreadLoop()
 	}
 }
 
+void RT_COM::feedData(const BYTE * byBuf, DWORD dwLen) {
+    const BYTE * buf = byBuf;
+    DWORD nr = dwLen;
+    if(nr)
+    {
+        OnRecvBuf(buf, nr);
+        if(m_bUsePackage)
+        {
+            for(DWORD i = 0 ; i < nr ; i++)
+            {
+                if(AnalyzePackage(buf[i]))
+                    OnRecvPackage(m_pRxBuf, m_RxPackageDataCount);
+            }
+        }
+    }
+}
+
 //解包函数
 BOOL RT_COM::AnalyzePackage(BYTE data)
 {
