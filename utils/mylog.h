@@ -4,6 +4,11 @@
 #include <QDebug>
 #include <QString>
 
-#define log qDebug()<<QString().sprintf
+inline void log(const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    qDebug()<<QString().vasprintf(fmt, ap);
+    va_end(ap);
+}
 
 #endif // MYLOG_H
