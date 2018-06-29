@@ -38,8 +38,11 @@ MainPresenter::MainPresenter(MainContract::View* view)
     connect(serialPort, &SerialPort::onRecvPackage, this, [this](QByteArray byteArray) {
         log("接收到数据包: len=%d, data=%s", byteArray.length(), byteArray.toHex().toStdString().c_str());
 
+        if (byteArray.length() != 16) return;
+
         uint8_t* data = new uint8_t[byteArray.length()];
-        for (int i=0; i<byteArray.length(); i++) {
+        const int dataOffset = 4;
+        for (int i=dataOffset; i<byteArray.length(); i++) {
             data[i] = byteArray[i];
         }
         this->canDataProcesser->process(data);
