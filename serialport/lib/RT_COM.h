@@ -57,8 +57,8 @@ private:
 
 	void *m_pRxPackageCallBackParam;
 	void *m_pRxPBufCallBackParam;
-	RxCallBackFunc m_RxPackageCallBack;
-	RxCallBackFunc m_RxBufCallBack;
+    RxCallBackFunc m_RxPackageCallBack = nullptr;
+    RxCallBackFunc m_RxBufCallBack = nullptr;
 
 	OVERLAPPED m_oSend;
 	OVERLAPPED m_oRecv;

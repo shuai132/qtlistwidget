@@ -5,9 +5,6 @@
 #include "maintypedef.h"
 #include <functional>
 #include <QObject>
-#include <atomic>
-
-#define DATA_DISP_TIMEOUTRESET      5       // 显示超过多少秒就清零
 
 typedef struct
 {
@@ -25,20 +22,19 @@ class ChStateManager : public QObject
 
 public:
     volatile static ChDataTypeDef ChData[AllChNum + 1];
+    static const uint16_t TIMEOUT_RESET = 5;
 
 public:
     static ChStateManager* getInstance();
-
-    void initTimer(QObject* parent = nullptr);
 
     typedef std::function<void(chnum_t ch)> ChStateTimeoutCallback;
     void setOnChStateTimeoutCallback(ChStateTimeoutCallback callback);
 
 private:
     ChStateManager();
+    void initTimer();
 
 private:
-    std::atomic_flag timerInited;
     ChStateTimeoutCallback chStateTimeoutCallback = nullptr;
 };
 

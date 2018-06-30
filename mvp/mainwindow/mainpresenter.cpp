@@ -8,7 +8,6 @@ MainPresenter::MainPresenter(MainContract::View* view)
 {
     this->model = new MainModel();
 
-    ChStateManager::getInstance()->initTimer(this);
     ChStateManager::getInstance()->setOnChStateTimeoutCallback([this](chnum_t ch) {
         log("通道超时: ch = %d", ch);
         ChStateManager::ChData[ch].state = ChState::HIDE;
@@ -21,7 +20,7 @@ MainPresenter::MainPresenter(MainContract::View* view)
             this->view->setState(ch, state);
 
             // 重置超时管理
-            ChStateManager::ChData[ch].timeout = DATA_DISP_TIMEOUTRESET;
+            ChStateManager::ChData[ch].timeout = ChStateManager::TIMEOUT_RESET;
             ChStateManager::ChData[ch].status  = true;          // 状态启用
         }
         else {
@@ -40,10 +39,11 @@ MainPresenter::MainPresenter(MainContract::View* view)
 
         if (byteArray.length() != 16) return;
 
-        uint8_t* data = new uint8_t[byteArray.length()];
         const int dataOffset = 4;
-        for (int i=dataOffset; i<byteArray.length(); i++) {
-            data[i] = byteArray[i];
+        const int dataLength = 8;
+        uint8_t data[dataLength];
+        for (int i=0; i<dataLength; i++) {
+            data[i] = byteArray[i + dataOffset];
         }
         this->canDataProcesser->process(data);
     });
@@ -60,7 +60,7 @@ MainPresenter::MainPresenter(MainContract::View* view)
 
 MainPresenter::~MainPresenter()
 {
-    qDebug()<<"~MainPresenter";
+    log("~MainPresenter");
     delete serialPort;
     delete canDataProcesser;
     delete model;

@@ -16,11 +16,9 @@ ChStateManager* ChStateManager::getInstance()
     return instance;
 }
 
-void ChStateManager::initTimer(QObject* parent)
+void ChStateManager::initTimer()
 {
-    if (timerInited.test_and_set()) return;
-
-    QTimer *timer = new QTimer(parent);
+    QTimer *timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [this](){
         for(chnum_t i=1; i < AllChNum + 1; i++) {
             if(ChData[i].on && ChData[i].status && ChData[i].timeout-- == 0) {
@@ -44,7 +42,9 @@ ChStateManager::ChStateManager()
     for(chnum_t i=1; i < AllChNum + 1; i++) {
         ChData[i].on = true;
         ChData[i].status = true;
-        ChData[i].timeout = DATA_DISP_TIMEOUTRESET;
+        ChData[i].timeout = TIMEOUT_RESET;
         ChData[i].state = ChState::HIDE;
     }
+
+    initTimer();
 }
