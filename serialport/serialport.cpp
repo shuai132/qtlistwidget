@@ -74,20 +74,21 @@ void SerialPort::tryOpen()
                 if (serialPortInfo.vendorIdentifier() != this->vid) {
                     qDebug()<<"expect vid:"<<this->vid;
                     valid = false;
-                    return;
+                    continue;
                 }
             }
             if (this->pid != 0) {
-                if (serialPortInfo.productIdentifier() != this->pid)
+                if (serialPortInfo.productIdentifier() != this->pid) {
                     qDebug()<<"expect pid:"<<this->pid;
                     valid = false;
-                    return;
+                    continue;
+                }
             }
             if (valid) {
                 qDebug()<<"find valid serialport! opening...";
                 if (serialPortInfo.isBusy()) {
                     qDebug()<<"is busy...";
-                    return;
+                    continue;
                 }
                 serial->setPortName(serialPortInfo.portName());
                 serial->open(QIODevice::ReadWrite);
