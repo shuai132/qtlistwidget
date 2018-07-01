@@ -15,16 +15,20 @@ MainPresenter::MainPresenter(MainContract::View* view)
     });
 
     canDataProcesser = new CanDataProcesser();
-    canDataProcesser->setChStateChangedCallback([this](chnum_t ch, ChState state) {
+    canDataProcesser->setOnChStateChangedCallback([this](chnum_t ch, ChState state) {
         if(ChStateManager::ChData[ch].on) {
             this->view->setState(ch, state);
-
-            // 重置超时管理
-            ChStateManager::ChData[ch].timeout = ChStateManager::TIMEOUT_RESET;
-            ChStateManager::ChData[ch].status  = true;          // 状态启用
         }
         else {
             log("ch = %d, 当前通道未启用！", ch);
+        }
+    });
+    canDataProcesser->setOnReceivedChStateCallback([this](chnum_t ch, ChState state) {
+        (void)state;
+        if(ChStateManager::ChData[ch].on) {
+            // 重置超时管理
+            ChStateManager::ChData[ch].timeout = ChStateManager::TIMEOUT_RESET;
+            ChStateManager::ChData[ch].status  = true;          // 状态启用
         }
     });
 

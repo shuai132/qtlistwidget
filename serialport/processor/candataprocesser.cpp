@@ -11,8 +11,12 @@ CanDataProcesser::CanDataProcesser()
     }
 }
 
-void CanDataProcesser::setChStateChangedCallback(ChStateChangedCallback callback) {
-    chStateChangedCallback = callback;
+void CanDataProcesser::setOnChStateChangedCallback(OnChStateChangedCallback callback) {
+    onChStateChangedCallback = callback;
+}
+
+void CanDataProcesser::setOnReceivedChStateCallback(OnReceivedChStateCallback callback) {
+    onReceivedChStateCallback = callback;
 }
 
 void CanDataProcesser::process(uint8_t* rxData) {
@@ -98,9 +102,12 @@ void CanDataProcesser::process(uint8_t* rxData) {
                             const ChState nowState  = state == 1 ? ChState::YES : ChState::NO;
                             ChStateManager::ChData[ch].state = nowState;
 
+                            if (onReceivedChStateCallback)
+                                onReceivedChStateCallback(ch, nowState);
+
                             if (nowState != lastState) {
-                                if (chStateChangedCallback)
-                                    chStateChangedCallback(ch, nowState);
+                                if (onChStateChangedCallback)
+                                    onChStateChangedCallback(ch, nowState);
                             }
                         }
                         else {

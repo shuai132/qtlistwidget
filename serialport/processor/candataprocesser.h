@@ -15,8 +15,11 @@ class CanDataProcesser
 public:
     CanDataProcesser();
 
-    typedef std::function<void(chnum_t ch, ChState state)> ChStateChangedCallback;
-    void setChStateChangedCallback(ChStateChangedCallback callback);
+    typedef std::function<void(chnum_t ch, ChState state)> OnChStateChangedCallback;
+    void setOnChStateChangedCallback(OnChStateChangedCallback callback);
+
+    typedef std::function<void(chnum_t ch, ChState state)> OnReceivedChStateCallback;
+    void setOnReceivedChStateCallback(OnReceivedChStateCallback callback);
 
     void process(uint8_t* rxData);
 
@@ -33,8 +36,8 @@ private:
     BKDataTypeDef _bkData[BK_MAX];              // 记录当前板卡数据
     int BkData[BK_MAX];                         // 记录板卡id对应的通道数量
 
-    ChStateChangedCallback chStateChangedCallback = nullptr;
-
+    OnChStateChangedCallback onChStateChangedCallback = nullptr;
+    OnReceivedChStateCallback onReceivedChStateCallback = nullptr;
 };
 
 #endif
