@@ -18,7 +18,7 @@ ChStateManager* ChStateManager::getInstance()
 
 void ChStateManager::initTimer()
 {
-    QTimer *timer = new QTimer();
+    QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [this](){
         for(chnum_t i=1; i < AllChNum + 1; i++) {
             if(ChData[i].on && ChData[i].status && ChData[i].timeout-- == 0) {

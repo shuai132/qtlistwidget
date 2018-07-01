@@ -78,7 +78,7 @@ void CanDataProcesser::process(uint8_t* rxData) {
                 data += _bkData[bk_id].data[10] << (8*2);
                 data += _bkData[bk_id].data[11] << (8*3);
 
-                CAN_DUG_PRINTF("解析如下：ms = %d, sec = %u, bk_id = %d, data = 0x%X", ms, sec, bk_id, data);
+                CAN_DUG_PRINTF("解析如下：ms = %d, sec = %u, bk_id = %d, data = 0x%02X", ms, sec, bk_id, data);
 
                 if (bk_id < BK_MAX) {
                     BkData[bk_id] = chCount;
@@ -121,7 +121,7 @@ void CanDataProcesser::process(uint8_t* rxData) {
             }
             else {
                 CAN_DUG_PRINTF("数据有丢失!");
-                CAN_DUG_PRINTF("_bkData[bk_id].mark = 0x%X", _bkData[bk_id].mark);
+                CAN_DUG_PRINTF("_bkData[bk_id].mark = 0x%02X", _bkData[bk_id].mark);
             }
             _bkData[bk_id].mark = 0x00;
         }
