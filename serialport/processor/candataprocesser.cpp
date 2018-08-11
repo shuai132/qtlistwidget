@@ -73,12 +73,15 @@ void CanDataProcesser::process(uint8_t* rxData) {
                 // _bkData[bk_id].data[6];    // reserved
                 uint8_t chCount = _bkData[bk_id].data[7];
 
-                uint32_t data = _bkData[bk_id].data[8];
-                data += _bkData[bk_id].data[9]  << (8*1);
-                data += _bkData[bk_id].data[10] << (8*2);
-                data += _bkData[bk_id].data[11] << (8*3);
+                uint64_t data = _bkData[bk_id].data[8];
+                data += (uint64_t) _bkData[bk_id].data[9]  << (8*1);
+                data += (uint64_t) _bkData[bk_id].data[10] << (8*2);
+                data += (uint64_t) _bkData[bk_id].data[11] << (8*3);
+                data += (uint64_t) _bkData[bk_id].data[12] << (8*4);
+                data += (uint64_t) _bkData[bk_id].data[13] << (8*5);
+                data += (uint64_t) _bkData[bk_id].data[14] << (8*6);
 
-                CAN_DUG_PRINTF("解析如下：ms = %d, sec = %u, bk_id = %d, data = 0x%02X", ms, sec, bk_id, data);
+                CAN_DUG_PRINTF("解析如下：ms = %d, sec = %u, bk_id = %d, data = 0x%02llX", ms, sec, bk_id, data);
 
                 if (bk_id < BK_MAX) {
                     BkData[bk_id] = chCount;
